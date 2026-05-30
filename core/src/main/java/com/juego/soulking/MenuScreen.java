@@ -30,6 +30,7 @@ public class MenuScreen implements Screen {
     private final Vector2 touchPosition;
     private final Rectangle playButton;
     private final Rectangle levelsButton;
+    private final Rectangle resetButton;
     private final Rectangle exitButton;
     private Texture background;
 
@@ -42,9 +43,10 @@ public class MenuScreen implements Screen {
         touchPosition = new Vector2();
 
         float buttonX = (WORLD_WIDTH - BUTTON_WIDTH) / 2f;
-        playButton = new Rectangle(buttonX, 360f, BUTTON_WIDTH, BUTTON_HEIGHT);
-        levelsButton = new Rectangle(buttonX, 250f, BUTTON_WIDTH, BUTTON_HEIGHT);
-        exitButton = new Rectangle(buttonX, 140f, BUTTON_WIDTH, BUTTON_HEIGHT);
+        playButton = new Rectangle(buttonX, 380f, BUTTON_WIDTH, BUTTON_HEIGHT);
+        levelsButton = new Rectangle(buttonX, 280f, BUTTON_WIDTH, BUTTON_HEIGHT);
+        resetButton = new Rectangle(buttonX, 180f, BUTTON_WIDTH, BUTTON_HEIGHT);
+        exitButton = new Rectangle(buttonX, 80f, BUTTON_WIDTH, BUTTON_HEIGHT);
     }
 
     @Override
@@ -86,6 +88,7 @@ public class MenuScreen implements Screen {
         shapes.setColor(0.18f, 0.20f, 0.24f, 1f);
         shapes.rect(playButton.x, playButton.y, playButton.width, playButton.height);
         shapes.rect(levelsButton.x, levelsButton.y, levelsButton.width, levelsButton.height);
+        shapes.rect(resetButton.x, resetButton.y, resetButton.width, resetButton.height);
         shapes.rect(exitButton.x, exitButton.y, exitButton.width, exitButton.height);
         shapes.end();
 
@@ -93,6 +96,7 @@ public class MenuScreen implements Screen {
         shapes.setColor(0.82f, 0.74f, 0.48f, 1f);
         shapes.rect(playButton.x, playButton.y, playButton.width, playButton.height);
         shapes.rect(levelsButton.x, levelsButton.y, levelsButton.width, levelsButton.height);
+        shapes.rect(resetButton.x, resetButton.y, resetButton.width, resetButton.height);
         shapes.rect(exitButton.x, exitButton.y, exitButton.width, exitButton.height);
         shapes.end();
     }
@@ -107,6 +111,9 @@ public class MenuScreen implements Screen {
         font.getData().setScale(2.2f);
         drawButtonText("Jugar", playButton);
         drawButtonText("Niveles", levelsButton);
+        font.getData().setScale(1.7f);
+        drawButtonText("Borrar progreso", resetButton);
+        font.getData().setScale(2.2f);
         drawButtonText("Salir", exitButton);
         batch.end();
     }
@@ -120,6 +127,9 @@ public class MenuScreen implements Screen {
             game.play();
         } else if (levelsButton.contains(x, y)) {
             game.openLevelsMenu();
+        } else if (resetButton.contains(x, y)) {
+            game.resetProgress();
+            game.openMainMenu();
         } else if (exitButton.contains(x, y)) {
             Gdx.app.exit();
         }

@@ -60,6 +60,11 @@ public class SoulKingGame extends Game {
         preferences.flush();
     }
 
+    public void resetProgress() {
+        preferences.clear();
+        preferences.flush();
+    }
+
     public int getBestScore(int level) {
         return preferences.getInteger(getBestScoreKey(level), 0);
     }

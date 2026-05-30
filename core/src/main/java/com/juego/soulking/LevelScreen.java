@@ -329,13 +329,23 @@ public class LevelScreen implements Screen {
 
     private void drawHud() {
         float left = viewport.getCamera().position.x - VIEW_WIDTH / 2f;
+
+        shapes.setProjectionMatrix(viewport.getCamera().combined);
+        shapes.begin(ShapeRenderer.ShapeType.Filled);
+        shapes.setColor(0f, 0f, 0f, 0.65f);
+        shapes.rect(left, 645f, VIEW_WIDTH, 75f);
+        shapes.end();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         font.setColor(Color.WHITE);
         font.getData().setScale(1.8f);
         font.draw(
             batch,
-            "Nivel " + level + "   Almas: " + collectedCount + "/" + souls.size + "   Tiempo: " + formatTime(elapsedTime),
+            "Nivel " + level
+                + "   Almas: " + collectedCount + "/" + souls.size
+                + "   Tiempo: " + formatTime(elapsedTime)
+                + "   Score: " + calculateScore(),
             left + 30f,
             680f
         );
