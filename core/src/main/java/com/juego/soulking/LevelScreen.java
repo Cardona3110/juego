@@ -37,6 +37,8 @@ public class LevelScreen implements Screen {
     private final Array<Rectangle> platforms;
     private final Array<Rectangle> souls;
     private final Array<Boolean> collectedSouls;
+    private final Array<Enemy> enemies;
+    private final Array<Projectile> projectiles;
     private final Rectangle portal;
     private final Rectangle backControl;
     private final Rectangle forwardControl;
@@ -52,8 +54,10 @@ public class LevelScreen implements Screen {
     private boolean levelFinished;
     private boolean newBestScore;
     private float elapsedTime;
+    private float hitMessageTime;
     private int collectedCount;
     private int finalScore;
+    private int hits;
 
     public LevelScreen(SoulKingGame game, int level) {
         this.game = game;
@@ -67,6 +71,8 @@ public class LevelScreen implements Screen {
         platforms = new Array<>();
         souls = new Array<>();
         collectedSouls = new Array<>();
+        enemies = new Array<>();
+        projectiles = new Array<>();
         portal = new Rectangle();
         backControl = new Rectangle(35f, 35f, 115f, 95f);
         forwardControl = new Rectangle(175f, 35f, 115f, 95f);
@@ -86,7 +92,7 @@ public class LevelScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (level > 2) {
+        if (level > 3) {
             drawComingSoonLevel();
             return;
         }
@@ -104,7 +110,9 @@ public class LevelScreen implements Screen {
     }
 
     private void createLevel() {
-        if (level == 2) {
+        if (level == 3) {
+            createLevelThree();
+        } else if (level == 2) {
             createLevelTwo();
         } else {
             createLevelOne();
@@ -134,6 +142,13 @@ public class LevelScreen implements Screen {
         addSoul(2415f, 300f);
         addSoul(3235f, 330f);
         addSoul(3690f, 245f);
+
+        addEnemy(1540f, 205f, 64f, 52f, 1510f, 1765f, 85f);
+        addEnemy(2310f, 265f, 64f, 52f, 2290f, 2555f, 95f);
+        addEnemy(3625f, 210f, 64f, 52f, 3600f, 3815f, 80f);
+
+        addProjectile(980f, 430f, 28f, 28f, 760f, 1380f, 210f);
+        addProjectile(2850f, 315f, 28f, 28f, 2720f, 3430f, 240f);
     }
 
     private void createLevelTwo() {
@@ -162,11 +177,68 @@ public class LevelScreen implements Screen {
         addSoul(3030f, 340f);
         addSoul(3830f, 370f);
         addSoul(4245f, 500f);
+
+        addEnemy(700f, 235f, 64f, 52f, 680f, 845f, 105f);
+        addEnemy(2180f, 295f, 64f, 52f, 2150f, 2345f, 115f);
+        addEnemy(3765f, 335f, 64f, 52f, 3740f, 3925f, 100f);
+        addEnemy(4685f, 320f, 64f, 52f, 4650f, 4925f, 120f);
+
+        addProjectile(1270f, 455f, 28f, 28f, 1040f, 1650f, 260f);
+        addProjectile(2790f, 520f, 28f, 28f, 2540f, 3220f, 285f);
+        addProjectile(4070f, 505f, 28f, 28f, 3740f, 4410f, 255f);
+    }
+
+    private void createLevelThree() {
+        backgroundFile = "fondo_nivel_3.jpg";
+        worldWidth = 5600f;
+        portal.set(5425f, 155f, 105f, 140f);
+
+        platforms.add(new Rectangle(0f, 70f, 500f, 70f));
+        platforms.add(new Rectangle(620f, 135f, 190f, 45f));
+        platforms.add(new Rectangle(930f, 215f, 180f, 45f));
+        platforms.add(new Rectangle(1235f, 300f, 190f, 45f));
+        platforms.add(new Rectangle(1570f, 205f, 250f, 45f));
+        platforms.add(new Rectangle(1980f, 110f, 210f, 45f));
+        platforms.add(new Rectangle(2320f, 190f, 220f, 45f));
+        platforms.add(new Rectangle(2660f, 285f, 230f, 45f));
+        platforms.add(new Rectangle(3060f, 405f, 230f, 45f));
+        platforms.add(new Rectangle(3470f, 300f, 250f, 45f));
+        platforms.add(new Rectangle(3880f, 185f, 220f, 45f));
+        platforms.add(new Rectangle(4250f, 95f, 240f, 45f));
+        platforms.add(new Rectangle(4620f, 210f, 240f, 45f));
+        platforms.add(new Rectangle(5020f, 70f, 580f, 70f));
+
+        addSoul(675f, 215f);
+        addSoul(985f, 295f);
+        addSoul(1295f, 380f);
+        addSoul(1650f, 285f);
+        addSoul(2395f, 270f);
+        addSoul(2735f, 365f);
+        addSoul(3135f, 485f);
+        addSoul(3555f, 380f);
+        addSoul(4705f, 290f);
+
+        addEnemy(1595f, 250f, 64f, 52f, 1570f, 1765f, 125f);
+        addEnemy(3500f, 345f, 64f, 52f, 3470f, 3655f, 120f);
+        addEnemy(5065f, 140f, 64f, 52f, 5020f, 5480f, 145f);
+
+        addProjectile(1125f, 405f, 28f, 28f, 930f, 1425f, 285f);
+        addProjectile(2940f, 505f, 28f, 28f, 2660f, 3290f, 320f);
+        addProjectile(4105f, 355f, 28f, 28f, 3880f, 4860f, 300f);
+        addProjectile(5000f, 290f, 28f, 28f, 4620f, 5530f, 330f);
     }
 
     private void addSoul(float x, float y) {
         souls.add(new Rectangle(x, y, 48f, 54f));
         collectedSouls.add(false);
+    }
+
+    private void addEnemy(float x, float y, float width, float height, float minX, float maxX, float speed) {
+        enemies.add(new Enemy(new Rectangle(x, y, width, height), minX, maxX, speed));
+    }
+
+    private void addProjectile(float x, float y, float width, float height, float minX, float maxX, float speed) {
+        projectiles.add(new Projectile(new Rectangle(x, y, width, height), minX, maxX, speed));
     }
 
     private void update(float delta) {
@@ -189,9 +261,39 @@ public class LevelScreen implements Screen {
         velocity.y += GRAVITY * delta;
         moveHorizontally(delta);
         moveVertically(delta);
+        updateHazards(delta);
         collectSouls();
+        checkHazards();
         checkPortal();
         keepPlayerInWorld();
+    }
+
+    private void updateHazards(float delta) {
+        if (hitMessageTime > 0f) {
+            hitMessageTime -= delta;
+        }
+
+        for (Enemy enemy : enemies) {
+            enemy.bounds.x += enemy.speed * enemy.direction * delta;
+            if (enemy.bounds.x < enemy.minX) {
+                enemy.bounds.x = enemy.minX;
+                enemy.direction = 1f;
+            } else if (enemy.bounds.x > enemy.maxX - enemy.bounds.width) {
+                enemy.bounds.x = enemy.maxX - enemy.bounds.width;
+                enemy.direction = -1f;
+            }
+        }
+
+        for (Projectile projectile : projectiles) {
+            projectile.bounds.x += projectile.speed * projectile.direction * delta;
+            if (projectile.bounds.x < projectile.minX) {
+                projectile.bounds.x = projectile.minX;
+                projectile.direction = 1f;
+            } else if (projectile.bounds.x > projectile.maxX - projectile.bounds.width) {
+                projectile.bounds.x = projectile.maxX - projectile.bounds.width;
+                projectile.direction = -1f;
+            }
+        }
     }
 
     private float getMoveDirection() {
@@ -269,6 +371,30 @@ public class LevelScreen implements Screen {
         }
     }
 
+    private void checkHazards() {
+        for (Enemy enemy : enemies) {
+            if (player.overlaps(enemy.bounds)) {
+                hitPlayer();
+                return;
+            }
+        }
+
+        for (Projectile projectile : projectiles) {
+            if (player.overlaps(projectile.bounds)) {
+                hitPlayer();
+                return;
+            }
+        }
+    }
+
+    private void hitPlayer() {
+        hits++;
+        elapsedTime += 3f;
+        hitMessageTime = 1.4f;
+        player.setPosition(90f, 155f);
+        velocity.setZero();
+    }
+
     private void checkPortal() {
         if (collectedCount == souls.size && player.overlaps(portal)) {
             levelFinished = true;
@@ -324,6 +450,18 @@ public class LevelScreen implements Screen {
         for (Rectangle platform : platforms) {
             shapes.rect(platform.x, platform.y, platform.width, platform.height);
         }
+        shapes.setColor(0.70f, 0.10f, 0.12f, 1f);
+        for (Enemy enemy : enemies) {
+            shapes.rect(enemy.bounds.x, enemy.bounds.y, enemy.bounds.width, enemy.bounds.height);
+        }
+        shapes.setColor(0.58f, 0.24f, 0.95f, 1f);
+        for (Projectile projectile : projectiles) {
+            shapes.circle(
+                projectile.bounds.x + projectile.bounds.width / 2f,
+                projectile.bounds.y + projectile.bounds.height / 2f,
+                projectile.bounds.width / 2f
+            );
+        }
         shapes.end();
     }
 
@@ -345,7 +483,8 @@ public class LevelScreen implements Screen {
             "Nivel " + level
                 + "   Almas: " + collectedCount + "/" + souls.size
                 + "   Tiempo: " + formatTime(elapsedTime)
-                + "   Score: " + calculateScore(),
+                + "   Score: " + calculateScore()
+                + "   Golpes: " + hits,
             left + 30f,
             680f
         );
@@ -365,6 +504,9 @@ public class LevelScreen implements Screen {
             }
             font.getData().setScale(1.2f);
             font.draw(batch, "Toca para continuar", left, 285f, VIEW_WIDTH, Align.center, false);
+        } else if (hitMessageTime > 0f) {
+            font.getData().setScale(1.4f);
+            font.draw(batch, "Cuidado: golpe recibido, +3 segundos", left, 590f, VIEW_WIDTH, Align.center, false);
         }
         batch.end();
     }
@@ -466,5 +608,35 @@ public class LevelScreen implements Screen {
         if (playerTexture != null) playerTexture.dispose();
         if (soulTexture != null) soulTexture.dispose();
         if (portalTexture != null) portalTexture.dispose();
+    }
+
+    private static class Enemy {
+        private final Rectangle bounds;
+        private final float minX;
+        private final float maxX;
+        private final float speed;
+        private float direction = 1f;
+
+        private Enemy(Rectangle bounds, float minX, float maxX, float speed) {
+            this.bounds = bounds;
+            this.minX = minX;
+            this.maxX = maxX;
+            this.speed = speed;
+        }
+    }
+
+    private static class Projectile {
+        private final Rectangle bounds;
+        private final float minX;
+        private final float maxX;
+        private final float speed;
+        private float direction = -1f;
+
+        private Projectile(Rectangle bounds, float minX, float maxX, float speed) {
+            this.bounds = bounds;
+            this.minX = minX;
+            this.maxX = maxX;
+            this.speed = speed;
+        }
     }
 }
