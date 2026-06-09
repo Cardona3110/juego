@@ -120,7 +120,7 @@ public class LevelScreen implements Screen {
     }
 
     private void createLevelOne() {
-        backgroundFile = "fondo_nivel_1.jpg";
+        backgroundFile = "fondo_nivel_1.png";
         worldWidth = 4400f;
         portal.set(4230f, 150f, 100f, 135f);
 
@@ -152,7 +152,7 @@ public class LevelScreen implements Screen {
     }
 
     private void createLevelTwo() {
-        backgroundFile = "fondo_nivel_2.jpg";
+        backgroundFile = "fondo_nivel_2.png";
         worldWidth = 5000f;
         portal.set(4825f, 330f, 105f, 140f);
 
@@ -189,7 +189,7 @@ public class LevelScreen implements Screen {
     }
 
     private void createLevelThree() {
-        backgroundFile = "fondo_nivel_3.jpg";
+        backgroundFile = "fondo_nivel_3.png";
         worldWidth = 5600f;
         portal.set(5425f, 155f, 105f, 140f);
 
